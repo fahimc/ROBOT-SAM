@@ -1,19 +1,21 @@
-  /**
-    * A very simple node web server that will respond to requests
-    * with the Tropo WebAPI JSON version of "Hello, World!" 
-    */
 
-    var http = require('http');
-    var tropowebapi = require('tropo-webapi');
 
-    var server = http.createServer(function (request, response) {
+    var natural = require('natural');
+var express = require('express');
+var app = express();
 
-        // Create a new instance of the TropoWebAPI object.
-        var tropo = new tropowebapi.TropoWebAPI(); 
-        tropo.say("Hello, World!");
+app.use(express.static(__dirname + '/App'));
+app.get('/service/compare/:wordOne/:wordTwo', function(req, res){
+    metaphone = natural.Metaphone, soundEx = natural.SoundEx;
+    var wordA = req.param("wordOne");
+    var wordB = req.param("wordTwo");
+    if(!wordA ||!wordB)res.send('0');
+    soundEx.attach();
+    // console.log(metaphone.compare(wordA, wordB));
 
-        // Render out the JSON for Tropo to consume.
-        response.writeHead(200, {'Content-Type': 'application/json'});
-        response.end(tropowebapi.TropoJSON(tropo));
+    // console.log(wordA.soundsLike(wordB));
+    var result =natural.JaroWinklerDistance(wordA,wordB);
+    res.send(String(result));
+});
 
-    }).listen(8000); // Listen on port 8000 for requests.
+app.listen(3000);
