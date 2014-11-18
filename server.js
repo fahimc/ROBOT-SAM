@@ -2,6 +2,7 @@
 
     var natural = require('natural');
 var express = require('express');
+var Dictionary = require('./modules/dictionary/dictionary.js');
 var app = express();
 
 app.use(express.static(__dirname + '/App'));
@@ -18,4 +19,6 @@ app.get('/service/compare/:wordOne/:wordTwo', function(req, res){
     res.send(String(result));
 });
 
-app.listen(3000);
+Dictionary.create(app);
+
+app.listen(4000);
